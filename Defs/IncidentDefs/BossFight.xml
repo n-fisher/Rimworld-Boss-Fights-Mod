@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+    <IncidentDef>
+        <defName>BossFight</defName>
+        <label>boss fight</label>
+        <targetTypes>
+            <li>MapPlayerHome</li>
+        </targetTypes>
+        <workerClass>Boss_Fight_Mod.IncidentWorker_BossFight</workerClass>
+        <baseChance>1.0</baseChance>
+        <minRefireDays>60</minRefireDays>
+        <letterDef>ThreatBig</letterDef>
+        <category>ThreatBig</category>
+        <pointsScaleable>true</pointsScaleable>
+        <minThreatPoints>2000</minThreatPoints>
+        <letterLabel>Boss Fight</letterLabel>
+        <letterText>The birds go silent as the ground shakes under your feet... a boss approaches!</letterText>
+    </IncidentDef>
+    <IncidentDef>
+        <defName>RaidEnemy</defName>
+        <label>enemy raid</label>
+        <targetTypes>
+            <li>MapPlayerHome</li>
+        </targetTypes>
+        <workerClass>IncidentWorker_RaidEnemy</workerClass>
+        <baseChance>7.4</baseChance>
+        <category>ThreatBig</category>
+        <pointsScaleable>true</pointsScaleable>
+        <tale>Raid</tale>
+    </IncidentDef>
+    <IncidentDef>
+        <defName>ManhunterPack</defName>
+        <label>manhunter pack</label>
+        <targetTypes>
+            <li>MapPlayerHome</li>
+        </targetTypes>
+        <workerClass>IncidentWorker_ManhunterPack</workerClass>
+        <baseChance>2.0</baseChance>
+        <category>ThreatBig</category>
+        <minRefireDays>8</minRefireDays>
+        <pointsScaleable>true</pointsScaleable>
+        <tale>ManhunterPack</tale>
+    </IncidentDef>
+</Defs>
