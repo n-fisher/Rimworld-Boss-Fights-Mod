@@ -14,9 +14,7 @@ namespace Boss_Fight_Mod
             }
             Pawn boss = ManhunterPackIncidentUtility.GenerateAnimals(BossFightDefOf.Thrumbo, map.Tile, 1).FirstOrFallback();
             Rot4 rot = Rot4.FromAngleFlat((map.Center - intVec).AngleFlat);
-            IntVec3 loc = CellFinder.RandomClosewalkCellNear(intVec, map, 10, null);
-            GenSpawn.Spawn(boss, loc, map, rot, false);
-
+            GenSpawn.Spawn(boss, intVec, map, rot, false);
             boss.mindState.mentalStateHandler.TryStartMentalState(MentalStateDefOf.ManhunterPermanent, null, true, false, null);
             Find.LetterStack.ReceiveLetter("Boss Fight", "The birds go silent and the ground trembles below you… BOSS FIGHT INCOMING", LetterDefOf.ThreatBig, boss, null);
             Find.TickManager.slower.SignalForceNormalSpeedShort();
