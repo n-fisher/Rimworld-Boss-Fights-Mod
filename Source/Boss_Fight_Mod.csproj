@@ -55,6 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BossFightDefOf.cs" />
+    <Compile Include="BossFightMod.cs" />
+    <Compile Include="BossFightSettings.cs" />
+    <Compile Include="BossFightUtility.cs" />
     <Compile Include="IncidentWorker_BossFight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

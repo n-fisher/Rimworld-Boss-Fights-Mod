@@ -16,29 +16,4 @@
         <letterLabel>Boss Fight</letterLabel>
         <letterText>The birds go silent as the ground shakes under your feet... a boss approaches!</letterText>
     </IncidentDef>
-    <IncidentDef>
-        <defName>RaidEnemy</defName>
-        <label>enemy raid</label>
-        <targetTypes>
-            <li>MapPlayerHome</li>
-        </targetTypes>
-        <workerClass>IncidentWorker_RaidEnemy</workerClass>
-        <baseChance>7.4</baseChance>
-        <category>ThreatBig</category>
-        <pointsScaleable>true</pointsScaleable>
-        <tale>Raid</tale>
-    </IncidentDef>
-    <IncidentDef>
-        <defName>ManhunterPack</defName>
-        <label>manhunter pack</label>
-        <targetTypes>
-            <li>MapPlayerHome</li>
-        </targetTypes>
-        <workerClass>IncidentWorker_ManhunterPack</workerClass>
-        <baseChance>2.0</baseChance>
-        <category>ThreatBig</category>
-        <minRefireDays>8</minRefireDays>
-        <pointsScaleable>true</pointsScaleable>
-        <tale>ManhunterPack</tale>
-    </IncidentDef>
 </Defs>

@@ -12,7 +12,7 @@ namespace Boss_Fight_Mod
             if (!RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 intVec, map, CellFinder.EdgeRoadChance_Animal, null)) {
                 return false;
             }
-            Pawn boss = ManhunterPackIncidentUtility.GenerateAnimals(BossFightDefOf.Thrumbo, map.Tile, 1).FirstOrFallback();
+            Pawn boss = BossFightUtility.GenerateAnimal(BossFightDefOf.BossKinds.RandomElement().Value, map.Tile);
             Rot4 rot = Rot4.FromAngleFlat((map.Center - intVec).AngleFlat);
             GenSpawn.Spawn(boss, intVec, map, rot, false);
             boss.mindState.mentalStateHandler.TryStartMentalState(MentalStateDefOf.ManhunterPermanent, null, true, false, null);
