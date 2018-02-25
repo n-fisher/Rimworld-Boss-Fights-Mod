@@ -15,7 +15,7 @@
         <description>This Thrumbo is a king among kings, larger and more powerful than many individual Thrumbos combined. It roams across the planet, destroying anything in its path.</description>
         <statBases>
             <MoveSpeed>3.5</MoveSpeed>
-            <!--<ComfyTemperatureMin>-65</ComfyTemperatureMin>-->
+            <ComfyTemperatureMin>-85</ComfyTemperatureMin>
             <MarketValue>22000</MarketValue>
             <MeatAmount>700</MeatAmount>
         </statBases>
@@ -69,7 +69,7 @@
         </tools>
         <race>
             <body>QuadrupedAnimalWithHoovesAndHorn</body>
-            <herdAnimal>true</herdAnimal>
+            <herdAnimal>false</herdAnimal>
             <herdMigrationAllowed>false</herdMigrationAllowed>
             <baseBodySize>17.5</baseBodySize>
             <baseHungerRate>6.75</baseHungerRate>
@@ -86,13 +86,20 @@
                 <ArmorRating_Heat>3.2</ArmorRating_Heat>
             </leatherStatFactors>
             <trainableIntelligence>Advanced</trainableIntelligence>
-            <gestationPeriodDays>80</gestationPeriodDays>
             <wildness>1</wildness>
             <lifeExpectancy>1100</lifeExpectancy>
             <lifeStageAges>
                 <li>
+                    <def>AnimalBaby</def>
+                    <minAge>0.00</minAge>
+                </li>
+                <li>
+                    <def>AnimalJuvenile</def>
+                    <minAge>0.01</minAge>
+                </li>
+                <li>
                     <def>AnimalAdult</def>
-                    <minAge>0.0</minAge>
+                    <minAge>0.02</minAge>
                     <soundCall>Pawn_Thrumbo_Call</soundCall>
                     <soundAngry>Pawn_Thrumbo_Angry</soundAngry>
                     <soundWounded>Pawn_Thrumbo_Pain</soundWounded>
@@ -108,12 +115,41 @@
     <PawnKindDef ParentName="AnimalKindBase">
         <defName>BossThrumbo</defName>
         <label>boss thrumbo</label>
-        <race>Thrumbo</race>
+        <race>BossThrumbo</race>
         <combatPower>880</combatPower>
         <canArriveManhunter>true</canArriveManhunter>
         <wildSpawn_spawnWild>false</wildSpawn_spawnWild>
         <lifeStages>
             <li>
+                <label>thrumbo calf</label>
+                <labelPlural>thrumbo calves</labelPlural>
+                <bodyGraphicData>
+                    <texPath>Things/Pawn/Animal/Thrumbo/Thrumbo</texPath>
+                    <drawSize>2.5</drawSize>
+                    <shadowData>
+                        <volume>(0.4, 0.3, 0.3)</volume>
+                        <offset>(0,0,-0.2)</offset>
+                    </shadowData>
+                </bodyGraphicData>
+                <dessicatedBodyGraphicData>
+                    <texPath>Things/Pawn/Animal/Dessicated/CritterDessicatedMedium</texPath>
+                    <drawSize>1.5</drawSize>
+                </dessicatedBodyGraphicData>
+            </li>
+            <li>
+                <bodyGraphicData>
+                    <texPath>Things/Pawn/Animal/Thrumbo/Thrumbo</texPath>
+                    <drawSize>4.0</drawSize>
+                    <shadowData>
+                        <volume>(0.7, 0.6, 0.4)</volume>
+                        <offset>(0,0,-0.25)</offset>
+                    </shadowData>
+                </bodyGraphicData>
+                <dessicatedBodyGraphicData>
+                    <texPath>Things/Pawn/Animal/Dessicated/CritterDessicatedMedium</texPath>
+                    <drawSize>1.75</drawSize>
+                </dessicatedBodyGraphicData>
+            </li>
             <li>
                 <bodyGraphicData>
                     <texPath>Things/Pawn/Animal/Thrumbo/Thrumbo</texPath>
