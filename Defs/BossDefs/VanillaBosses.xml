@@ -5,8 +5,43 @@
             <manhunterOnDamageChance>1.0</manhunterOnDamageChance>
             <manhunterOnTameFailChance>1.0</manhunterOnTameFailChance>
         </race>
+        <statBases>
+            <ComfyTemperatureMin>-100</ComfyTemperatureMin>
+        </statBases>
+        <race>
+            <herdAnimal>false</herdAnimal>
+            <herdMigrationAllowed>false</herdMigrationAllowed>
+            <wildness>1</wildness>
+            <lifeExpectancy>65536</lifeExpectancy>
+            <lifeStageAges>
+                <li>
+                    <def>AnimalBaby</def>
+                    <minAge>0.00</minAge>
+                </li>
+                <li>
+                    <def>AnimalJuvenile</def>
+                    <minAge>0.01</minAge>
+                </li>
+                <li>
+                    <def>AnimalAdult</def>
+                    <minAge>0.02</minAge>
+                    <soundCall>Pawn_Thrumbo_Call</soundCall>
+                    <soundAngry>Pawn_Thrumbo_Angry</soundAngry>
+                    <soundWounded>Pawn_Thrumbo_Pain</soundWounded>
+                    <soundDeath>Pawn_Thrumbo_Death</soundDeath>
+                </li>
+            </lifeStageAges>
+            <soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
+            <soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
+            <soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
+        </race>
     </ThingDef>
-    
+
+    <PawnKindDef Name="BossKindBase" ParentName="AnimalKindBase">
+        <canArriveManhunter>true</canArriveManhunter>
+        <wildSpawn_spawnWild>false</wildSpawn_spawnWild>
+    </PawnKindDef>
+
     <!-- ====================================================== -->
 
     <ThingDef ParentName="BossAnimalBase">
@@ -15,7 +50,6 @@
         <description>This Thrumbo is a king among kings, larger and more powerful than many individual Thrumbos combined. It roams across the planet, destroying anything in its path.</description>
         <statBases>
             <MoveSpeed>3.5</MoveSpeed>
-            <ComfyTemperatureMin>-85</ComfyTemperatureMin>
             <MarketValue>22000</MarketValue>
             <MeatAmount>700</MeatAmount>
         </statBases>
@@ -69,8 +103,6 @@
         </tools>
         <race>
             <body>QuadrupedAnimalWithHoovesAndHorn</body>
-            <herdAnimal>false</herdAnimal>
-            <herdMigrationAllowed>false</herdMigrationAllowed>
             <baseBodySize>17.5</baseBodySize>
             <baseHungerRate>6.75</baseHungerRate>
             <baseHealthScale>65.0</baseHealthScale>
@@ -85,40 +117,14 @@
                 <ArmorRating_Sharp>4.0</ArmorRating_Sharp>
                 <ArmorRating_Heat>3.2</ArmorRating_Heat>
             </leatherStatFactors>
-            <trainableIntelligence>Advanced</trainableIntelligence>
-            <wildness>1</wildness>
-            <lifeExpectancy>1100</lifeExpectancy>
-            <lifeStageAges>
-                <li>
-                    <def>AnimalBaby</def>
-                    <minAge>0.00</minAge>
-                </li>
-                <li>
-                    <def>AnimalJuvenile</def>
-                    <minAge>0.01</minAge>
-                </li>
-                <li>
-                    <def>AnimalAdult</def>
-                    <minAge>0.02</minAge>
-                    <soundCall>Pawn_Thrumbo_Call</soundCall>
-                    <soundAngry>Pawn_Thrumbo_Angry</soundAngry>
-                    <soundWounded>Pawn_Thrumbo_Pain</soundWounded>
-                    <soundDeath>Pawn_Thrumbo_Death</soundDeath>
-                </li>
-            </lifeStageAges>
-            <soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
-            <soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
-            <soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
         </race>
     </ThingDef>
 
-    <PawnKindDef ParentName="AnimalKindBase">
+    <PawnKindDef ParentName="BossKindBase">
         <defName>BossThrumbo</defName>
         <label>boss thrumbo</label>
         <race>BossThrumbo</race>
         <combatPower>880</combatPower>
-        <canArriveManhunter>true</canArriveManhunter>
-        <wildSpawn_spawnWild>false</wildSpawn_spawnWild>
         <lifeStages>
             <li>
                 <label>thrumbo calf</label>
@@ -170,4 +176,5 @@
             </li>
         </lifeStages>
     </PawnKindDef>
+
 </Defs>
