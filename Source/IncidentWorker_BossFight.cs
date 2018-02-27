@@ -7,6 +7,7 @@ namespace Boss_Fight_Mod
     {
         protected override bool TryExecuteWorker(IncidentParms parms)
         {
+            BossFightDefGenerator.BossifyVanillaAnimals();
             Map map = (Map) parms.target;
             
             if (!RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 intVec, map, CellFinder.EdgeRoadChance_Animal, null)) {

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
@@ -7,43 +7,74 @@ namespace Boss_Fight_Mod
 {
     class BossFightDefOf
     {
-        private static IEnumerable<SoundDef> allSoundDefs;
-        private static SoundDef bossHitPawnSound;
-        private static SoundDef bossHitBuildingSound;
-        private static SoundDef bossMissSound;
-        private static SoundDef call;
-        private static SoundDef angry;
-        private static SoundDef pain;
-        private static SoundDef death;
-        //private static readonly LifeStageDef animalBaby = DefDatabase<LifeStageDef>.GetNamed("AnimalBaby");
-        //private static readonly LifeStageDef animalJuvenile = DefDatabase<LifeStageDef>.GetNamed("AnimalJuvenile");
-        private static LifeStageDef animalAdult;
-        private static IEnumerable<ThingDef> thingDefs = DefDatabase<ThingDef>.AllDefs;
+        public static readonly LifeStageDef AnimalBaby = new BossLifeStageDef("baby");
+        public static readonly LifeStageDef AnimalJuvenile = new BossLifeStageDef("juvenile");
+        public static readonly LifeStageDef AnimalAdult = new BossLifeStageDef("adult");
+        public static readonly SoundDef BossHitPawnSound = new BossActionSoundDef("Pawn/Animal/Melee_Big/Hit_Pawn");
+        public readonly static SoundDef BossHitBuildingSound = new BossActionSoundDef("Pawn/Animal/Melee_Big/Hit_Building");
+        public readonly static SoundDef BossMissSound = new BossActionSoundDef() {
+            subSounds = {
+                new BossActionSubSoundDef("Pawn/Animal/Melee_Big/Miss") {
+                    pitchRange = new FloatRange(0.9311765f, 1.045882f)
+                }
+            }
+        };
 
-        public static IEnumerable<SoundDef> AllSoundDefs => allSoundDefs ?? SetAllSoundDefs();
-        public static IEnumerable<ThingDef> ThingDefs => thingDefs ?? SetAllThingDefs();
-        public static SoundDef BossMissSound => bossMissSound ?? SetBossMissSound();
-        public static SoundDef BossHitBuildingSound => bossHitBuildingSound ?? SetBossHitBuildingSound();
-        public static SoundDef BossHitPawnSound => bossHitPawnSound ?? SetBossHitPawnSound();
-        public static SoundDef Call => call ?? SetCall();
-        public static SoundDef Angry => angry ?? SetAngry();
-        public static SoundDef Pain => pain ?? SetPain();
-        public static SoundDef Death => death ?? SetDeath();
-        //public static LifeStageDef AnimalBaby => animalBaby;
-        //public static LifeStageDef AnimalJuvenile => animalBaby;
-        public static LifeStageDef AnimalAdult => animalAdult ?? SetLifeStage();
+        public readonly static SoundDef Call = new BossSoundDef() {
+            subSounds = {
+                new BossSubSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Call") {
+                    volumeRange = new FloatRange(18, 18),
+                    distRange = new FloatRange(0, 50.40025f),
+                }
+            }
+        };
+        public readonly static SoundDef Angry = new BossSoundDef() {
+            maxVoices = 2,
+            subSounds = {
+                new BossSubSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Angry") {
+                    volumeRange = new FloatRange(25, 25),
+                    pitchRange = new FloatRange(0.9541176f, 1.137647f)
+                }
+            }
+        };
+        public readonly static SoundDef Pain = new BossSoundDef() {
+            subSounds = {
+                new BossSubSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Pain") {
+                    volumeRange = new FloatRange(17, 17),
+                    pitchRange = new FloatRange(0.9311765f, 1.091765f),
+                    distRange = new FloatRange(0, 70),
+                    repeatMode = Verse.Sound.RepeatSelectMode.NeverTwice
+                }
+            }
+        };
+        public readonly static SoundDef Death = new BossSoundDef() {
+            subSounds = {
+                new BossSubSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Death") {
+                    volumeRange = new FloatRange(30, 30),
+                    pitchRange = new FloatRange(0.9311764f, 1.068824f),
+                    distRange = new FloatRange(0, 70)
+                }
+            }
+        };
         public static Dictionary<string, PawnKindDef> BossKinds = new Dictionary<string, PawnKindDef>();
         public static Dictionary<string, ThingDef> BossDefs = new Dictionary<string, ThingDef>();
-
-        private static IEnumerable<ThingDef> SetAllThingDefs() => thingDefs = DefDatabase<ThingDef>.AllDefs;
-        private static IEnumerable<SoundDef> SetAllSoundDefs() => allSoundDefs = DefDatabase<SoundDef>.AllDefs;
-        private static SoundDef SetBossMissSound() => bossMissSound = AllSoundDefs.Where(def => def.defName == "Pawn_Melee_BigBash_Miss").FirstOrFallback(null);
-        private static SoundDef SetBossHitBuildingSound() => bossHitBuildingSound = AllSoundDefs.Where(def => def.defName == "Pawn_Melee_BigBash_HitBuilding").FirstOrFallback(null);
-        private static SoundDef SetBossHitPawnSound() => bossHitPawnSound = AllSoundDefs.Where(def => def.defName == "Pawn_Melee_BigBash_HitPawn").FirstOrFallback(null);
-        private static SoundDef SetCall() => call = allSoundDefs.Where(def => def.defName == "Pawn_Thrumbo_Call").FirstOrFallback(null);
-        private static SoundDef SetAngry() => angry = allSoundDefs.Where(def => def.defName == "Pawn_Thrumbo_Angry").FirstOrFallback(null);
-        private static SoundDef SetPain() => pain = allSoundDefs.Where(def => def.defName == "Pawn_Thrumbo_Pain").FirstOrFallback(null);
-        private static SoundDef SetDeath() => death = allSoundDefs.Where(def => def.defName == "Pawn_Thrumbo_Death").FirstOrFallback(null);
-        private static LifeStageDef SetLifeStage() => animalAdult = DefDatabase<LifeStageDef>.AllDefs.Where(def => def.defName == "AnimalAdult").FirstOrFallback(null);
+        public static readonly List<LifeStageAge> defLifeStages = new List<LifeStageAge>() {
+            new LifeStageAge() {
+                def = AnimalBaby,
+                minAge = 0,
+            },
+            new LifeStageAge() {
+                def = AnimalJuvenile,
+                minAge = 0.01f,
+            },
+            new LifeStageAge() {
+                def = AnimalAdult,
+                minAge = 0.02f,
+                soundAngry = Angry,
+                soundCall = Call,
+                soundDeath = Death,
+                soundWounded = Pain
+            },
+        };
     }
 }

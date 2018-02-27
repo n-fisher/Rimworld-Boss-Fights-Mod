@@ -47,17 +47,18 @@
       <Private>False</Private>
     </Reference>
     <None Include="..\About\**" />
-    <None Include="..\Defs\IncidentDef.xml">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="..\Languages\**" />
     <None Include="..\Patches\**" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BossFightDefGenerator.cs" />
     <Compile Include="BossFightDefOf.cs" />
     <Compile Include="BossFightMod.cs" />
     <Compile Include="BossFightSettings.cs" />
     <Compile Include="BossFightUtility.cs" />
+    <Compile Include="BossLifeStageDef.cs" />
+    <Compile Include="BossPawnKindDef.cs" />
+    <Compile Include="BossSoundDefs.cs" />
     <Compile Include="IncidentWorker_BossFight.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

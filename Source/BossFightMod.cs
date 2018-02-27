@@ -7,9 +7,8 @@ namespace Boss_Fight_Mod
     {
         public BossFightMod(ModContentPack content) : base(content)
         {
-            BossFightUtility.BossifyVanillaAnimals();
         }
-
+        
         public override void DoSettingsWindowContents(Rect inRect)
         {
             base.DoSettingsWindowContents(inRect);
@@ -23,6 +22,15 @@ namespace Boss_Fight_Mod
         public override void WriteSettings()
         {
             base.WriteSettings();
+        }
+    }
+
+    [StaticConstructorOnStartup]
+    class BossFightModConstructor
+    {
+        public BossFightModConstructor()
+        {
+            BossFightDefGenerator.BossifyVanillaAnimals(true);
         }
     }
 }
