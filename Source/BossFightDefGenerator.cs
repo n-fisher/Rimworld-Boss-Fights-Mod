@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using RimWorld;
 using Verse;
 
@@ -11,13 +12,13 @@ namespace Boss_Fight_Mod
 
         public static void BossifyVanillaAnimals(bool all = false)
         {
-            IEnumerable<PawnKindDef> animals = all ?
-                DefDatabase<PawnKindDef>.AllDefs.Where(def => def.RaceProps.Animal) :
-                BossFightSettings.enabledBossTypes;
-            Log.Message("animal count:" + animals.Count());
-            if (!generatorHasRan)
-            {
+            if (!generatorHasRan) {
+                IEnumerable<PawnKindDef> animals = all ?
+                    DefDatabase<PawnKindDef>.AllDefs.Where(def => def.RaceProps.Animal) :
+                    BossFightSettings.enabledBossTypes;
+
                 if (animals.Any()) {
+                    animals = animals.ToList();
                     foreach (PawnKindDef animal in animals) {
                         CreateBossifiedVanillaAnimalDefs(animal);
                     }
@@ -30,19 +31,16 @@ namespace Boss_Fight_Mod
         {
             //build animal's ThingDef
             ThingDef def = ThingDef.Named(animal.defName);
-            ThingDef bossDef = BossifyVanillaAnimalDef(def);
-            DefDatabase<ThingDef>.Add(bossDef);
-            BossFightDefOf.BossDefs.Add(bossDef.defName, bossDef);
+            BossFightDefOf.BossDefs.Add(BossifyVanillaAnimalDef(def));
 
             //build PawnKindDef
-            PawnKindDef bossKind = BossifyVanillaAnimalKind(animal);
-            DefDatabase<PawnKindDef>.Add(bossKind);
-            BossFightDefOf.BossKinds.Add(bossKind.defName, bossKind);
+            BossFightDefOf.BossKinds.Add(BossifyVanillaAnimalKind(animal));
         }
 
+        //todo move these into bosspawndefs
         public static ThingDef BossifyVanillaAnimalDef(ThingDef animal)
         {
-            ThingDef ret = animal;
+            ThingDef ret = new BossPawnThingDef(animal);
 
             //Rename def for saving
             ret.defName = "Boss" + ret.defName;
@@ -60,7 +58,11 @@ namespace Boss_Fight_Mod
             ret.SetStatBaseValue(StatDefOf.MoveSpeed, newMoveSpeed);
 
             //Modify defs
-            RaceProperties race = ret.race;
+            RaceProperties race = new RaceProperties();
+            foreach (FieldInfo field in race.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
+            {
+                field.SetValue(race, field.GetValue(ret.race));
+            }
             race.manhunterOnDamageChance = 1;
             race.manhunterOnTameFailChance = 1;
             race.herdAnimal = false;
@@ -73,6 +75,9 @@ namespace Boss_Fight_Mod
             race.soundMeleeMiss = BossFightDefOf.BossMissSound;
             race.baseBodySize *= BossFightSettings.VanillaBossSizeMultiplier;
             race.baseHealthScale *= BossFightSettings.VanillaBossPowerMultiplier;
+            race.soundMeleeHitBuilding = BossFightDefOf.BossHitBuildingSound;
+            race.soundMeleeMiss = BossFightDefOf.BossMissSound;
+            race.soundMeleeHitPawn = BossFightDefOf.BossHitPawnSound;
             ret.race = race;
 
             ret.tools.ForEach(tool => {
@@ -85,30 +90,41 @@ namespace Boss_Fight_Mod
 
         public static PawnKindDef BossifyVanillaAnimalKind(PawnKindDef animal)
         {
-            PawnKindDef ret = animal;
-            ret.defName = "Boss" + ret.defName;
-            ret.label = "Boss " + ret.label;
-            BossFightDefOf.BossDefs.TryGetValue(ret.label, out ret.race);
-            ret.combatPower *= BossFightSettings.VanillaBossPowerMultiplier;
-            ret.canArriveManhunter = true;
-            ret.wildSpawn_spawnWild = false;
-            ret.lifeStages = PawnKindLifeStages(animal);
-            ret.minGenerationAge = BossFightSettings.VanillaBossMinimumAge;
-            ret.race = BossFightDefOf.BossDefs.TryGetValue(ret.defName);
+            string defName = "Boss" + animal.defName;
+            PawnKindDef ret = new BossPawnKindDef(animal) {
+                defName = defName,
+                label = "Boss " + animal.label,
+                combatPower = animal.combatPower * BossFightSettings.VanillaBossPowerMultiplier,
+                canArriveManhunter = true,
+                wildSpawn_spawnWild = false,
+                lifeStages = PawnKindLifeStages(animal),
+                minGenerationAge = BossFightSettings.VanillaBossMinimumAge,
+                race = new BossPawnThingDef(BossFightDefOf.BossDefs.First(def => def.defName == defName)),
+            };
+            ret.ResolveReferences();
+            Log.Message(defName + " " + ret.RaceProps.soundMeleeHitPawn.ToStringSafe());
             return ret;
         }
 
         private static List<PawnKindLifeStage> PawnKindLifeStages(PawnKindDef kind)
         {
-            //get last, adult size
-            PawnKindLifeStage ret = kind.lifeStages.Last();
-            //make it even bigger
-            ret.bodyGraphicData.drawSize *= BossFightSettings.VanillaBossSizeMultiplier;
-            //set the dessicated graphic to the largest available
-            ret.dessicatedBodyGraphicData.texPath = "Things/Pawn/Animal/Dessicated/CritterDessicatedMedium";
-            //make it bigger
-            ret.dessicatedBodyGraphicData.drawSize *= BossFightSettings.VanillaBossSizeMultiplier;
-            return kind.lifeStages;
+            List<PawnKindLifeStage> ret = new List<PawnKindLifeStage>();
+            foreach(PawnKindLifeStage stage in kind.lifeStages)
+            {
+                PawnKindLifeStage pawnKindLifeStage = new PawnKindLifeStage();
+                foreach (FieldInfo field in stage.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    field.SetValue(pawnKindLifeStage, field.GetValue(stage));
+                }
+                //make it even bigger
+                pawnKindLifeStage.bodyGraphicData.drawSize *= BossFightSettings.VanillaBossSizeMultiplier;
+                //set the dessicated graphic to the largest available
+                pawnKindLifeStage.dessicatedBodyGraphicData.texPath = "Things/Pawn/Animal/Dessicated/CritterDessicatedMedium";
+                //make it bigger
+                pawnKindLifeStage.dessicatedBodyGraphicData.drawSize *= BossFightSettings.VanillaBossSizeMultiplier;
+                ret.Add(pawnKindLifeStage);
+            }
+            return ret;
         }
     }
 }
