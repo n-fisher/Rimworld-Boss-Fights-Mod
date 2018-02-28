@@ -75,9 +75,6 @@ namespace Boss_Fight_Mod
             race.soundMeleeMiss = BossFightDefOf.BossMissSound;
             race.baseBodySize *= BossFightSettings.VanillaBossSizeMultiplier;
             race.baseHealthScale *= BossFightSettings.VanillaBossPowerMultiplier;
-            race.soundMeleeHitBuilding = BossFightDefOf.BossHitBuildingSound;
-            race.soundMeleeMiss = BossFightDefOf.BossMissSound;
-            race.soundMeleeHitPawn = BossFightDefOf.BossHitPawnSound;
             ret.race = race;
 
             ret.tools.ForEach(tool => {
@@ -102,7 +99,6 @@ namespace Boss_Fight_Mod
                 race = new BossPawnThingDef(BossFightDefOf.BossDefs.First(def => def.defName == defName)),
             };
             ret.ResolveReferences();
-            Log.Message(defName + " " + ret.RaceProps.soundMeleeHitPawn.ToStringSafe());
             return ret;
         }
 

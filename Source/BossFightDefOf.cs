@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
+using Verse.Sound;
 
 namespace Boss_Fight_Mod
 {
@@ -16,46 +17,90 @@ namespace Boss_Fight_Mod
         public static readonly float OneOneThree = 1.137647f;
         private static readonly float DotNineFive = 0.9541176f;
         private static readonly float DotNineThree = 0.9311765f;
-        public static readonly SoundDef BossHitPawnSound = new BossActionSoundDef("Pawn/Animal/Melee_Big/Hit_Pawn");
-        public static readonly SoundDef BossHitBuildingSound = new BossActionSoundDef("Pawn/Animal/Melee_Big/Hit_Building");
-
-        public static SoundDef BossMissSound = new BossActionSoundDef("Pawn/Animal/Melee_Big/Miss") {
+        public static readonly SoundDef BossHitPawnSound = new BossActionSoundDef
+        {
+            defName = "BossSoundHitPawn",
             subSounds = {
-                new BossActionSubSoundDef("Pawn/Animal/Melee_Big/Miss") {
+                new BossActionSubSoundDef {
+                    name = "BossSubSoundHit_Pawn",
+                    parentDef = BossHitPawnSound,
+                    grains = new List<AudioGrain>() { new BossAudioGrain_Folder("Pawn/Animal/Melee_Big/Hit_Pawn") },
+                }
+            }
+        };
+        public static readonly SoundDef BossHitBuildingSound = new BossActionSoundDef
+        {
+            defName = "BossSoundHitPawn",
+            subSounds = {
+                new BossActionSubSoundDef {
+                    parentDef = BossHitBuildingSound,
+                    name = "BossSubSoundHit_Building",
+                    grains = new List<AudioGrain>() { new BossAudioGrain_Folder("Pawn/Animal/Melee_Big/Hit_Building") },
+                }
+            }
+        };
+        public static SoundDef BossMissSound = new BossActionSoundDef
+        {
+            defName = "BossSoundMiss",
+            subSounds = {
+                new BossActionSubSoundDef {
+                    parentDef = BossMissSound,
+                    name = "BossSubSoundMiss",
+                    grains = new List<AudioGrain>() { new BossAudioGrain_Folder("Pawn/Animal/Melee_Big/Miss") },
                     pitchRange = new FloatRange(DotNineThree, 1.045882f)
                 }
             }
         };
-        public static readonly SoundDef Call = new BossSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Call") {
+        public static readonly SoundDef Call = new BossSoundDef
+        {
+            defName = "BossSoundCall",
             subSounds = {
-                new BossSubSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Call") {
+                new BossSubSoundDef {
+                    parentDef = Call,
+                    name = "BossSubSoundCall",
+                    grains = new List<AudioGrain>() { new BossAudioGrain_Folder("Pawn/Animal/Thrumbo/Thrumbo_Call") },
                     volumeRange = new FloatRange(18, 18),
                     distRange = new FloatRange(0, 50.40025f),
                 }
             }
         };
-        public static readonly SoundDef Angry = new BossSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Angry") {
+        public static readonly SoundDef Angry = new BossSoundDef
+        {
+            defName = "BossSoundAngry",
             maxVoices = 2,
             subSounds = {
-                new BossSubSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Angry") {
+                new BossSubSoundDef {
+                    parentDef = Angry,
+                    name = "BossSubSoundAngry",
+                    grains = new List<AudioGrain>() { new BossAudioGrain_Folder("Pawn/Animal/Thrumbo/Thrumbo_Angry") },
                     volumeRange = new FloatRange(25, 25),
                     pitchRange = new FloatRange(DotNineFive, OneOneThree)
                 }
             }
         };
-        public static readonly SoundDef Pain = new BossSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Pain") {
+        public static readonly SoundDef Pain = new BossSoundDef
+        {
+            defName = "BossSoundPain",
             subSounds = {
-                new BossSubSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Pain") {
+                new BossSubSoundDef {
+                    parentDef = Pain,
+                    name = "BossSubSoundPain",
+                    grains = new List<AudioGrain>() { new BossAudioGrain_Folder("Pawn/Animal/Thrumbo/Thrumbo_Pain") },
                     volumeRange = new FloatRange(17, 17),
                     pitchRange = new FloatRange(DotNineFive, 1.091765f),
                     distRange = zeroToSeventy,
-                    repeatMode = Verse.Sound.RepeatSelectMode.NeverTwice
+                    repeatMode = RepeatSelectMode.NeverTwice
                 }
             }
         };
-        public static readonly SoundDef Death = new BossSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Death") {
+        public static readonly SoundDef Death = new BossSoundDef
+        {
+            defName = "BossSoundDeath",
             subSounds = {
-                new BossSubSoundDef("Pawn/Animal/Thrumbo/Thrumbo_Death") {
+                new BossSubSoundDef {
+                    parentDef = Death,
+                    name = "BossSubSoundDeath",
+                    grains = new List<AudioGrain>() { new BossAudioGrain_Folder("Pawn/Animal/Thrumbo/Thrumbo_Death") },
                     volumeRange = new FloatRange(30, 30),
                     pitchRange = new FloatRange(DotNineThree, 1.068824f),
                     distRange = zeroToSeventy
@@ -63,15 +108,15 @@ namespace Boss_Fight_Mod
             }
         };
         public static readonly List<LifeStageAge> defLifeStages = new List<LifeStageAge>() {
-            new LifeStageAge() {
+            new LifeStageAge {
                 def = AnimalBaby,
                 minAge = 0
             },
-            new LifeStageAge() {
+            new LifeStageAge {
                 def = AnimalJuvenile,
                 minAge = 0.01f
             },
-            new LifeStageAge() {
+            new LifeStageAge {
                 def = AnimalAdult,
                 minAge = 0.02f,
                 soundAngry = Angry,
@@ -82,5 +127,6 @@ namespace Boss_Fight_Mod
         };
         public static List<PawnKindDef> BossKinds = new List<PawnKindDef>();
         public static List<ThingDef> BossDefs = new List<ThingDef>();
+        public static List<SoundDef> BossSounds = new List<SoundDef> { BossHitPawnSound, BossHitBuildingSound, BossMissSound, Pain, Angry, Death, Call };
     }
 }
