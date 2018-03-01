@@ -63,7 +63,7 @@
     <Compile Include="BossPawnDefs.cs" />
     <Compile Include="BossSoundDefs.cs" />
     <Compile Include="IncidentWorker_BossFight.cs" />
-    <Compile Include="Patches.cs" />
+    <Compile Include="LordJob_BossAssault.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

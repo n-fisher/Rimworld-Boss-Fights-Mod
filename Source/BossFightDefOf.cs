@@ -125,6 +125,29 @@ namespace Boss_Fight_Mod
                 soundWounded = Pain
             },
         };
+        public static FactionDef BossFaction = new FactionDef
+        {
+            autoFlee = false,
+            defName = "BFBossDef",
+            canMakeRandomly = false,
+            earliestRaidDays = 60,
+            goodwillDailyFall = 100,
+            hidden = true,
+            humanlikeFaction = false,
+            isPlayer = false,
+            label = "boss",
+            maxCountAtGameStart = 1,
+            mustStartOneEnemy = true,
+            naturalColonyGoodwill = new FloatRange(-100, -100),
+            pawnsPlural = "bosses",
+            requiredCountAtGameStart = 1,
+            startingGoodwill = new FloatRange(-100, -100),
+            techLevel = TechLevel.Transcendent,
+            canUseAvoidGrid = true,
+            fixedName = "Boss"
+        };
+
+
         public static List<PawnKindDef> BossKinds = new List<PawnKindDef>();
         public static List<ThingDef> BossDefs = new List<ThingDef>();
         public static List<SoundDef> BossSounds = new List<SoundDef> { BossHitPawnSound, BossHitBuildingSound, BossMissSound, Pain, Angry, Death, Call };

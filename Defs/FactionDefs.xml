@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+    <FactionDef>
+        <defName>BFBoss</defName>
+        <label>bosses</label>
+        <description>Bosses</description>
+        <pawnsPlural>bosses</pawnsPlural>
+        <requiredCountAtGameStart>1</requiredCountAtGameStart>
+        <fixedName>bosses</fixedName>
+        <raidCommonalityFromPointsCurve>
+            <points>
+                <li>(0, 0)</li>
+            </points>
+        </raidCommonalityFromPointsCurve>
+        <humanlikeFaction>false</humanlikeFaction>
+        <hidden>true</hidden>
+        <autoFlee>false</autoFlee>
+        <canUseAvoidGrid>true</canUseAvoidGrid>
+        <techLevel>Ultra</techLevel>
+        <startingGoodwill>
+            <min>-100</min>
+            <max>-100</max>
+        </startingGoodwill>
+        <allowedArrivalTemperatureRange>
+            <min>-100</min>
+            <max>200</max>
+        </allowedArrivalTemperatureRange>
+    </FactionDef>
+</Defs>

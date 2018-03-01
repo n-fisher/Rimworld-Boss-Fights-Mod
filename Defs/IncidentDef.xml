@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
     <IncidentDef>
-        <defName>BossFight</defName>
+        <defName>BFBossFight</defName>
         <label>boss fight</label>
         <targetTypes>
             <li>MapPlayerHome</li>
@@ -9,11 +9,8 @@
         <workerClass>Boss_Fight_Mod.IncidentWorker_BossFight</workerClass>
         <baseChance>1.0</baseChance>
         <minRefireDays>60</minRefireDays>
-        <letterDef>ThreatBig</letterDef>
         <category>ThreatBig</category>
         <pointsScaleable>true</pointsScaleable>
         <minThreatPoints>2000</minThreatPoints>
-        <letterLabel>Boss Fight</letterLabel>
-        <letterText>The birds go silent as the ground shakes under your feet... a boss approaches!</letterText>
     </IncidentDef>
 </Defs>
