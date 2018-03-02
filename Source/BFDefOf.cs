@@ -148,7 +148,7 @@ namespace Boss_Fight_Mod
         };
 
 
-        public static List<PawnKindDef> BossKinds = new List<PawnKindDef>();
+        public static List<PawnKindDef> BossKinds = new List<PawnKindDef>() { PawnKindDefOf.Thrumbo };
         public static List<ThingDef> BossDefs = new List<ThingDef>();
         public static List<SoundDef> BossSounds = new List<SoundDef> { BossHitPawnSound, BossHitBuildingSound, BossMissSound, Pain, Angry, Death, Call };
     }

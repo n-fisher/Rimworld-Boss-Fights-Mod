@@ -7,8 +7,7 @@ namespace Boss_Fight_Mod
     {
         public static Pawn GenerateAnimal(PawnKindDef animal, int tile, Faction faction)
         {
-            PawnGenerationRequest x = new PawnGenerationRequest(animal, faction, PawnGenerationContext.NonPlayer, tile);
-            return PawnGenerator.GeneratePawn(x);
+            return PawnGenerator.GeneratePawn(new PawnGenerationRequest(animal, faction, PawnGenerationContext.NonPlayer, tile));
         }
     }
 }

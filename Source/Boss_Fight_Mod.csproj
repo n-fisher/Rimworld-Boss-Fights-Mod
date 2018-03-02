@@ -54,16 +54,17 @@
     <None Include="..\Patches\**" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BossFightDefGenerator.cs" />
-    <Compile Include="BossFightDefOf.cs" />
-    <Compile Include="BossFightMod.cs" />
-    <Compile Include="BossFightSettings.cs" />
-    <Compile Include="BossFightUtility.cs" />
-    <Compile Include="BossLifeStageDef.cs" />
-    <Compile Include="BossPawnDefs.cs" />
-    <Compile Include="BossSoundDefs.cs" />
-    <Compile Include="IncidentWorker_BossFight.cs" />
-    <Compile Include="LordJob_BossAssault.cs" />
+    <Compile Include="BFDefGenerator.cs" />
+    <Compile Include="BFDefOf.cs" />
+    <Compile Include="BFMod.cs" />
+    <Compile Include="BFSettings.cs" />
+    <Compile Include="BFUtility.cs" />
+    <Compile Include="BFLifeStageDef.cs" />
+    <Compile Include="BFPawnDefs.cs" />
+    <Compile Include="BFSoundDefs.cs" />
+    <Compile Include="BFCombatPowerCalculator.cs" />
+    <Compile Include="BFIncidentWorker_BossFight.cs" />
+    <Compile Include="BFLordJob_BossAssault.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
