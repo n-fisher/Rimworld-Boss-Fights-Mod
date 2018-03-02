@@ -10,7 +10,7 @@ namespace Boss_Fight_Mod
 {
     public static class CombatPowerCalculator
     {
-        //public so other mods may add to this list
+        //public so other mods may add their own bosses to this list
         public static Dictionary<string, float> BodyMoveCoverages = new Dictionary<string, float>
         {
             new KeyValuePair<String, float>("Bird", 0.547f),
@@ -28,7 +28,6 @@ namespace Boss_Fight_Mod
             new KeyValuePair<String, float>("Monkey", 0.4571f),
             new KeyValuePair<String, float>("Snake", 0.78f),
         };
-
         public static Dictionary<string, float> BodyVitalCoverages = new Dictionary<string, float>
         {
             new KeyValuePair<String, float>("Bird", 0.558f),
@@ -70,8 +69,6 @@ namespace Boss_Fight_Mod
                 BodyMoveCoverage(def.race.body)
             );
         }
-
-        //private static List<string> movementTags = new List<string>() { "MovingLimbCore", "MovingLimbSegment", "MovingLimbDigit" };
 
         private static float FinalCombatPower(ThingDef def)
         {

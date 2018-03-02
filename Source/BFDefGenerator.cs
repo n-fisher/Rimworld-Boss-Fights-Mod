@@ -14,8 +14,10 @@ namespace Boss_Fight_Mod
         {
             if (!generatorHasRan) {
                 IEnumerable<PawnKindDef> animals = all ?
-                    DefDatabase<PawnKindDef>.AllDefs.Where(def => def.RaceProps.Animal) :
-                    BossFightSettings.enabledBossTypes;
+                    DefDatabase<PawnKindDef>.AllDefs.Where(def =>
+                    //only create bosses out of known body types
+                        CombatPowerCalculator.BodyMoveCoverages.Keys.Contains(def.RaceProps.body.defName)) 
+                    : BossFightSettings.enabledBossTypes;
 
                 if (animals.Any()) {
                     animals = animals.ToList();
