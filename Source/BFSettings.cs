@@ -4,14 +4,14 @@ using Verse;
 
 namespace Boss_Fight_Mod
 {
-    class BossFightSettings : ModSettings
+    public class BossFightSettings : ModSettings
     {
         public static readonly List<PawnKindDef> enabledBossTypes = new List<PawnKindDef> { PawnKindDefOf.Thrumbo };
-        public static readonly float VanillaBossSizeMultiplier = 5;
-        public static readonly float VanillaBossPowerMultiplier = 5;
-        public static readonly float VanillaBossSpeedMultiplier = .67f;
-        public static readonly float VanillaBossCooldownMultiplier = 1 / VanillaBossSpeedMultiplier;
-        public static readonly int VanillaBossMinimumAge = 1000;
+        public const int VanillaBossMinimumAge = 1000;
+        public const int MaxBuffAttempts = 100;
+        public const float SizeScalar = 0.33f;
+        public const float HealthScalar = 2.0f;
+        public const float CDScalar = 2.0f;
 
         public override void ExposeData()
         {

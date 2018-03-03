@@ -1,50 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Harmony;
 using RimWorld;
 using Verse;
+using static Boss_Fight_Mod.BossFightUtility;
 
 namespace Boss_Fight_Mod
 {
     public static class CombatPowerCalculator
     {
+        private const float buffIncrement = 0.15f;
         //public so other mods may add their own bosses to this list
-        public static Dictionary<string, float> BodyMoveCoverages = new Dictionary<string, float>
-        {
-            new KeyValuePair<String, float>("Bird", 0.547f),
-            new KeyValuePair<String, float>("BeetleLike", 0.476f),
-            new KeyValuePair<String, float>("BeetleLikeWithClaw", 0.476f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithPaws", 0.578f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithPawsAndTail", 0.57f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithHooves", 0.578f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithHoovesAndHump", 0.5382f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithHoovesAndTusks", 0.5502f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithHoovesTusksAndTrunk", 0.541f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithHoovesAndHorn", 0.5612f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithClawsTailAndJowl", 0.56f),
-            new KeyValuePair<String, float>("TurtleLike", 0.441f),
-            new KeyValuePair<String, float>("Monkey", 0.4571f),
-            new KeyValuePair<String, float>("Snake", 0.78f),
-        };
-        public static Dictionary<string, float> BodyVitalCoverages = new Dictionary<string, float>
-        {
-            new KeyValuePair<String, float>("Bird", 0.558f),
-            new KeyValuePair<String, float>("BeetleLike", 0.461f),
-            new KeyValuePair<String, float>("BeetleLikeWithClaw", 0.459f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithPaws", 0.579f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithPawsAndTail", 0.519f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithHooves", 0.579f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithHoovesAndHump", 0.519f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithHoovesAndTusks", 0.53f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithHoovesTusksAndTrunk", 0.514f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithHoovesAndHorn", 0.543f),
-            new KeyValuePair<String, float>("QuadrupedAnimalWithClawsTailAndJowl", 0.532f),
-            new KeyValuePair<String, float>("TurtleLike", 0.55f),
-            new KeyValuePair<String, float>("Monkey", 0.4231f),
-            new KeyValuePair<String, float>("Snake", 0.87f),
-        };
+        public static Dictionary<string, float> BodyMoveCoverages = new Dictionary<string, float>();
+        public static Dictionary<string, float> BodyVitalCoverages = new Dictionary<string, float>();
 
 
         const float BaseHumanMoveSpeed = 4.61f;
@@ -57,10 +26,110 @@ namespace Boss_Fight_Mod
             new CurvePoint(99999, 20255)
         };
 
-        public static int CombatPower(ThingDef def)
+        public static float BuffUpToThreshold(PawnKindDef def, float points, IEnumerable<BuffCat> strategy, out Dictionary<BuffCat, float> buffMultipliers, int MaxBuffAttempts = 10000)
         {
-            return (int)FinalCombatPower(def);
-        } 
+            Dictionary<BuffCat, float> buffs = new Dictionary<BuffCat, float> {
+                [BuffCat.Accuracy] = 1,
+                [BuffCat.Cooldown] = 1 * BossFightSettings.CDScalar,
+                [BuffCat.Damage] = 1,
+                [BuffCat.Health] = 1 * BossFightSettings.HealthScalar,
+                [BuffCat.Size] = 1,
+                [BuffCat.Speed] = 1
+            };
+
+            Debug.Log(buffs.ToStringFullContents());
+            float power = def.combatPower;
+            float powerAfterBuff;
+            int buffAttempts;
+
+            // TODO: Make a binary search fn instead of linear to zoom
+            for (buffAttempts = 0; buffAttempts < MaxBuffAttempts; buffAttempts++) {
+                BuffCat buff = strategy.RandomElement();
+                Debug.Log(power + ": " + buffs.ToStringSafeEnumerable());
+                powerAfterBuff = PowerIfBuffed(def, buffs, buff);
+                if (powerAfterBuff < points) {
+                    power = powerAfterBuff;
+                    if (buff == BuffCat.Cooldown) {
+                        // reduce by 15% every time without hitting 0.
+                        buffs[buff] *= (1 - buffIncrement);
+                    } else {
+                        buffs[buff] += buffIncrement;
+                    }
+                } else {
+                    break;
+                }
+            }
+            if (buffAttempts >= MaxBuffAttempts) {
+                Log.Warning("Took too long generating a powerful enough boss. Buff attempts capped at " + MaxBuffAttempts);
+            }
+            buffMultipliers = buffs;
+            Debug.Log("Took " + buffAttempts + " buffs to create a " + power + " Boss " + def.label);
+            return power;
+        }
+
+        private static float PowerIfBuffed(PawnKindDef def, Dictionary<BuffCat, float> buffMultipliers, BuffCat buff)
+        {
+            Dictionary<BuffCat, float> buffs = new Dictionary<BuffCat, float>(buffMultipliers);
+            if (buff == BuffCat.Cooldown) {
+                // reduce by 15% every time without hitting 0.
+                buffs[buff] *= (1 - buffIncrement);
+            } else {
+                buffs[buff] += buffIncrement;
+            }
+            return CombatPower(def.race, buffs);
+        }
+
+        public static int CombatPower(ThingDef def) => (int) FinalCombatPower(def);
+
+        private static int CombatPower(ThingDef def, Dictionary<BuffCat, float> buffMultipliers) => (int) FinalCombatPower(def, buffMultipliers);
+
+        private static float FinalCombatPower(ThingDef def, Dictionary<BuffCat, float> buffMultipliers)
+        {
+            return curve.Evaluate(BaseCombatPower(def, buffMultipliers));
+        }
+
+        private static float BaseCombatPower(ThingDef def, Dictionary<BuffCat, float> buffMultipliers)
+        {
+            return 17.5f * DPS(def, buffMultipliers) * HealthScore(def, buffMultipliers) * MoveScore(def, buffMultipliers);
+        }
+
+        private static float HealthScore(ThingDef def, Dictionary<BuffCat, float> buffMultipliers)
+        {
+            return def.race.baseHealthScale * buffMultipliers[BuffCat.Health]
+                / (1 + (RangeAccuracyMultiplier(def.race.baseBodySize * buffMultipliers[BuffCat.Size]) - 1) / 2)
+                / ((Multiplier(def.statBases?.FirstOrDefault(modifier =>
+                    modifier.stat == StatDefOf.ArmorRating_Blunt)?.value ?? 0) +
+                    Multiplier(def.statBases?.FirstOrDefault(modifier =>
+                        modifier.stat == StatDefOf.ArmorRating_Sharp)?.value ?? 0)) / 2)
+                / ((BodyVitalCoverage(def.race.body) + 0.5f) / 2)
+                / 2;
+        }
+
+        private static float DPS(ThingDef def, Dictionary<BuffCat, float> buffMultipliers) => 0.62f * SumToolDPSContribs(def.tools, buffMultipliers);
+
+        private static float SumToolDPSContribs(List<Tool> tools, Dictionary<BuffCat, float> buffMultipliers)
+        {
+            float ret = 0;
+            float totalCommonality = 0;
+
+            float powerBuff = buffMultipliers[BuffCat.Damage];
+            float cdBuff = buffMultipliers[BuffCat.Cooldown];
+
+            foreach (Tool t in tools) {
+                totalCommonality += t.commonality;
+                ret += (t.power * powerBuff) / (cdBuff * t.cooldownTime) * t.commonality;
+            }
+
+            return ret / totalCommonality;
+        }
+
+        private static float MoveScore(ThingDef def, Dictionary<BuffCat, float> buffMultipliers)
+        {
+            return MoveScore(
+                def.statBases.First(modifier => modifier.stat == StatDefOf.MoveSpeed).value * buffMultipliers[BuffCat.Speed],
+                BodyMoveCoverage(def.race.body)
+            );
+        }
 
         public static float MoveScore(ThingDef def)
         {
@@ -82,7 +151,7 @@ namespace Boss_Fight_Mod
 
         public static float HealthScore(ThingDef def)
         {
-            return def.race.baseHealthScale 
+            return def.race.baseHealthScale
                 / (1 + (RangeAccuracyMultiplier(def.race.baseBodySize) - 1) / 2)
                 / ((Multiplier(def, StatDefOf.ArmorRating_Blunt) + Multiplier(def, StatDefOf.ArmorRating_Sharp)) / 2)
                 / ((BodyVitalCoverage(def.race.body) + 0.5f) / 2)
@@ -92,6 +161,11 @@ namespace Boss_Fight_Mod
         private static float Multiplier(ThingDef def, StatDef statDef)
         {
             float armor = def.statBases.First(modifier => modifier.stat == statDef).value;
+            return Multiplier(armor);
+        }
+
+        private static float Multiplier(float armor)
+        {
             return (1 - DamageReduction(armor)) * (1 - Deflection(armor));
         }
 
@@ -139,12 +213,14 @@ namespace Boss_Fight_Mod
             return BodyVitalCoverages.GetValueSafe(bodyDef.defName);
         }
 
-        private static float MoveScore(float moveSpeed, float bodyMovePercent) {
+        private static float MoveScore(float moveSpeed, float bodyMovePercent)
+        {
             return moveSpeed / bodyMovePercent / BaseHumanMoveSpeed;
         }
 
-        private static float RangeAccuracyMultiplier(float bodySize) {
-            return Math.Max(Math.Min(0.5f, bodySize), bodySize);
+        private static float RangeAccuracyMultiplier(float bodySize)
+        {
+            return Math.Min(Math.Max(0.5f, bodySize), 2);
         }
     }
 }

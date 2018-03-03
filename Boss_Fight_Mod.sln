@@ -5,19 +5,6 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boss_Fight_Mod", "Source\Boss_Fight_Mod.csproj", "{D7D21B4A-1DA7-41D8-B202-C58CA8FA62AA}"
 EndProject
-Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "RimWorldWin", "..\..\RimWorldWin.exe", "{8601E1A9-20F1-440A-BA7E-80A3C3FF1FB0}"
-	ProjectSection(DebuggerProjectSystem) = preProject
-		PortSupplier = 00000000-0000-0000-0000-000000000000
-		Executable = C:\SteamLibrary\SteamApps\common\RimWorld\RimWorldWin.exe
-		RemoteMachine = NICKS-PC
-		StartingDirectory = C:\SteamLibrary\SteamApps\common\RimWorld
-		Environment = Default
-		LaunchingEngine = 00000000-0000-0000-0000-000000000000
-		UseLegacyDebugEngines = No
-		LaunchSQLEngine = No
-		AttachLaunchAction = No
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,10 +21,6 @@ Global
 		{D7D21B4A-1DA7-41D8-B202-C58CA8FA62AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D7D21B4A-1DA7-41D8-B202-C58CA8FA62AA}.Release|x86.ActiveCfg = Release|Any CPU
 		{D7D21B4A-1DA7-41D8-B202-C58CA8FA62AA}.Release|x86.Build.0 = Release|Any CPU
-		{8601E1A9-20F1-440A-BA7E-80A3C3FF1FB0}.Debug|Any CPU.ActiveCfg = Release|x86
-		{8601E1A9-20F1-440A-BA7E-80A3C3FF1FB0}.Debug|x86.ActiveCfg = Release|x86
-		{8601E1A9-20F1-440A-BA7E-80A3C3FF1FB0}.Release|Any CPU.ActiveCfg = Release|x86
-		{8601E1A9-20F1-440A-BA7E-80A3C3FF1FB0}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

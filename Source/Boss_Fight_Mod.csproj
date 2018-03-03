@@ -17,8 +17,7 @@
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\Assemblies\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -54,11 +53,10 @@
     <None Include="..\Patches\**" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BFDefGenerator.cs" />
     <Compile Include="BFDefOf.cs" />
     <Compile Include="BFMod.cs" />
     <Compile Include="BFSettings.cs" />
-    <Compile Include="BFUtility.cs" />
+    <Compile Include="BFUtilities.cs" />
     <Compile Include="BFLifeStageDef.cs" />
     <Compile Include="BFPawnDefs.cs" />
     <Compile Include="BFSoundDefs.cs" />
@@ -71,6 +69,12 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)..\..\RimWorldWin.exe</StartProgram>
+    <StartArguments>
+    </StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>echo F|xcopy "$(ProjectDir)..\About\About-$(ConfigurationName).xml" "$(TargetDir)..\About\About.xml" /C /Y /K /Q /D

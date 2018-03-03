@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using RimWorld;
 using Verse;
 using Verse.Sound;
@@ -128,7 +129,7 @@ namespace Boss_Fight_Mod
         public static FactionDef BossFaction = new FactionDef
         {
             autoFlee = false,
-            defName = "BFBossDef",
+            defName = "BFBossFaction",
             canMakeRandomly = false,
             earliestRaidDays = 60,
             goodwillDailyFall = 100,
@@ -147,8 +148,30 @@ namespace Boss_Fight_Mod
             fixedName = "Boss"
         };
 
+        public static List<PawnKindLifeStage> PawnKindLifeStages(IEnumerable<PawnKindLifeStage> stages, float sizeMultiplier)
+        {
+            List<PawnKindLifeStage> ret = new List<PawnKindLifeStage>();
+            foreach (PawnKindLifeStage stage in stages)
+            {
+                PawnKindLifeStage pawnKindLifeStage = new PawnKindLifeStage();
+                foreach (FieldInfo field in stage.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    field.SetValue(pawnKindLifeStage, field.GetValue(stage));
+                }
+                //make it even bigger
+                pawnKindLifeStage.bodyGraphicData.drawSize *= sizeMultiplier;
+                //set the dessicated graphic to the largest available
+                pawnKindLifeStage.dessicatedBodyGraphicData.texPath = "Things/Pawn/Animal/Dessicated/CritterDessicatedMedium";
+                //make it bigger
+                pawnKindLifeStage.dessicatedBodyGraphicData.drawSize *= sizeMultiplier;
+                ret.Add(pawnKindLifeStage);
+            }
+            return ret;
+        }
 
-        public static List<PawnKindDef> BossKinds = new List<PawnKindDef>();
+
+        public static List<PawnKindDef> AllowedBossKinds;
+        public static List<ThingDef> AllowedBossDefs;
         public static List<ThingDef> BossDefs = new List<ThingDef>();
         public static List<SoundDef> BossSounds = new List<SoundDef> { BossHitPawnSound, BossHitBuildingSound, BossMissSound, Pain, Angry, Death, Call };
     }

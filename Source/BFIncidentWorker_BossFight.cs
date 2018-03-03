@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI.Group;
@@ -7,32 +8,43 @@ namespace Boss_Fight_Mod
 {
     public class IncidentWorker_BossFight : IncidentWorker_ManhunterPack
     {
-        private static Lord bossLord;
-        private static Faction faction;
+        private Lord bossLord;
+        private Faction faction;
 
-        protected override bool TryExecuteWorker(IncidentParms parms)
+        protected void GuardNullStatics(IncidentParms parms)
         {
+            if (BossFightDefOf.AllowedBossKinds == null) {
+                BossFightDefOf.AllowedBossKinds = DefDatabase<PawnKindDef>.AllDefs.Where(def =>
+                    def.RaceProps?.Animal ?? false && CombatPowerCalculator.BodyMoveCoverages.Keys.Contains(def.RaceProps?.body?.defName)
+                ).ToList();
+            }
+            if (BossFightDefOf.AllowedBossDefs == null) {
+                BossFightDefOf.AllowedBossDefs = new List<ThingDef>(DefDatabase<ThingDef>.AllDefs.Where(def =>
+                    def.race?.Animal ?? false && CombatPowerCalculator.BodyMoveCoverages.Keys.Contains(def.race?.body?.defName))
+                );
+            }
             if (faction == null) {
                 faction = FactionGenerator.NewGeneratedFaction(BossFightDefOf.BossFaction);
                 Find.FactionManager.Add(faction);
-               Find.VisibleMap.pawnDestinationReservationManager.RegisterFaction(faction);
+                Find.VisibleMap.pawnDestinationReservationManager.RegisterFaction(faction);
             }
 
-            Map map = (Map) parms.target;
             if (bossLord == null) {
-                bossLord = LordMaker.MakeNewLord(faction, new LordJob_BossAssault(faction), map);
+                bossLord = LordMaker.MakeNewLord(faction, new LordJob_BossAssault(faction), (Map) parms.target);
                 Find.VisibleMap.lordManager.AddLord(bossLord);
             }
+        }
+
+        protected override bool TryExecuteWorker(IncidentParms parms)
+        {
+            Map map = (Map) parms.target;
+
+            GuardNullStatics(parms);
 
             if (!RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 intVec, map, CellFinder.EdgeRoadChance_Animal, null)) {
                 return false;
             }
-
-            ThingDef originalDef = BossFightDefOf.BossDefs.RandomElement();
-            ThingDef bossThingDef = BossFightDefGenerator.BossifyVanillaAnimalDef(originalDef);
-            PawnKindDef def = BossFightDefGenerator.BossifyVanillaAnimalKind(PawnKindDef.Named(originalDef.defName));
-
-            Pawn boss = BossFightUtility.GenerateAnimal(def, map.Tile, faction);
+            Pawn boss = BossFightUtility.GenerateAnimal(map.Tile, faction, parms.points);
             Rot4 rot = Rot4.FromAngleFlat((map.Center - intVec).AngleFlat);
             bossLord.AddPawn(boss);
 
