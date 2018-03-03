@@ -51,8 +51,8 @@ namespace Boss_Fight_Mod
 
             statBases = new List<StatModifier>();
             size = new IntVec2(
-                def.size.x * (int) Math.Max((buffMultipliers[BuffCat.Size] * BossFightSettings.SizeScalar), 1),
-                def.size.z * (int) Math.Max((buffMultipliers[BuffCat.Size] * BossFightSettings.SizeScalar), 1)
+                def.size.x * (int) Math.Max((buffMultipliers[BuffCat.Size] * BossFightSettings.SizeFinalScalar), 1),
+                def.size.z * (int) Math.Max((buffMultipliers[BuffCat.Size] * BossFightSettings.SizeFinalScalar), 1)
             );
 
             BossifyTools(def, buffMultipliers);
@@ -63,7 +63,7 @@ namespace Boss_Fight_Mod
         }
 
         private void BossifyRace(ThingDef def, Dictionary<BuffCat, float> buffMultipliers)
-        {
+        { 
             //define if bugs reported
             //public PawnNameCategory nameCategory;
             //public List<HediffGiverSetDef> hediffGiverSets;
@@ -129,36 +129,6 @@ namespace Boss_Fight_Mod
         }
     }
 
-
-    /*public class BossBodyDef : BodyDef
-    {
-
-        public BossBodyDef(BodyDef def, Dictionary<BuffCat, float> buffMultipliers)
-        {
-            foreach (FieldInfo field in def.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
-            {
-                field.SetValue(this, field.GetValue(def));
-            }
-            defName = "Boss" + def.defName;
-        }
-    }
-    public class BossCorePart : BodyPartRecord
-    {
-        public BossCorePart(BodyPartRecord corePart, Dictionary<BuffCat, float> buffMultipliers)
-        {
-            foreach (FieldInfo field in corePart.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
-            {
-                field.SetValue(this, field.GetValue(corePart));
-            }
-            def = corePart.def;
-            parent = corePart.parent;
-            groups = corePart.groups;
-            depth = corePart.depth;
-            height = corePart.height;
-            parts = corePart.parts;
-        }
-    }
-    */
     public class BossTool : Tool
     {
         public BossTool(Tool tool)

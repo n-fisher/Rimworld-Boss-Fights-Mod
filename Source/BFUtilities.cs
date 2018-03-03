@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using RimWorld;
 using Verse;
@@ -24,12 +25,14 @@ namespace Boss_Fight_Mod
 
             Debug.Log("Created a boss with " + def.combatPower + " power.\nBuffs: " + def.BuffMultiple.ToStringFullContents());
 
-            return GenerateAnimal(def, t, f);
+            return SpawnNewPawn(def, t, f);
         }
 
-        private static Pawn GenerateAnimal(PawnKindDef animal, int tile, Faction faction)
+        private static Pawn SpawnNewPawn(PawnKindDef animal, int tile, Faction faction)
         {
-            return PawnGenerator.GeneratePawn(new PawnGenerationRequest(animal, faction, PawnGenerationContext.NonPlayer, tile));
+            Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(animal, faction, PawnGenerationContext.NonPlayer, tile));
+            pawn.thingIDNumber = Find.UniqueIDsManager.GetNextThingID();
+            return pawn;
         }
     }
 

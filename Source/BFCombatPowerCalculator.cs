@@ -10,7 +10,6 @@ namespace Boss_Fight_Mod
 {
     public static class CombatPowerCalculator
     {
-        private const float buffIncrement = 0.15f;
         //public so other mods may add their own bosses to this list
         public static Dictionary<string, float> BodyMoveCoverages = new Dictionary<string, float>();
         public static Dictionary<string, float> BodyVitalCoverages = new Dictionary<string, float>();
@@ -26,37 +25,40 @@ namespace Boss_Fight_Mod
             new CurvePoint(99999, 20255)
         };
 
-        public static float BuffUpToThreshold(PawnKindDef def, float points, IEnumerable<BuffCat> strategy, out Dictionary<BuffCat, float> buffMultipliers, int MaxBuffAttempts = 10000)
+        public static float BuffUpToThreshold(PawnKindDef def, float points, IEnumerable<BuffCat> strategyWeights, out Dictionary<BuffCat, float> buffMultipliers, int MaxBuffAttempts = 10000)
         {
+            List<BuffCat> strategy = new List<BuffCat>(strategyWeights);
             Dictionary<BuffCat, float> buffs = new Dictionary<BuffCat, float> {
                 [BuffCat.Accuracy] = 1,
-                [BuffCat.Cooldown] = 1 * BossFightSettings.CDScalar,
+                [BuffCat.Cooldown] = 1 * BossFightSettings.CooldownInitialScalar,
                 [BuffCat.Damage] = 1,
-                [BuffCat.Health] = 1 * BossFightSettings.HealthScalar,
+                [BuffCat.Health] = 1,
                 [BuffCat.Size] = 1,
                 [BuffCat.Speed] = 1
             };
 
-            Debug.Log(buffs.ToStringFullContents());
             float power = def.combatPower;
             float powerAfterBuff;
             int buffAttempts;
+            List<BuffCat> maxedBuffs = new List<BuffCat>();
 
             // TODO: Make a binary search fn instead of linear to zoom
             for (buffAttempts = 0; buffAttempts < MaxBuffAttempts; buffAttempts++) {
+                if (strategy.NullOrEmpty()) {
+                    break;
+                }
                 BuffCat buff = strategy.RandomElement();
                 Debug.Log(power + ": " + buffs.ToStringSafeEnumerable());
                 powerAfterBuff = PowerIfBuffed(def, buffs, buff);
-                if (powerAfterBuff < points) {
-                    power = powerAfterBuff;
-                    if (buff == BuffCat.Cooldown) {
-                        // reduce by 15% every time without hitting 0.
-                        buffs[buff] *= (1 - buffIncrement);
-                    } else {
-                        buffs[buff] += buffIncrement;
-                    }
+                //Debug.Log("Chosen " + buff.ToString() + "Buff would increase power to " + powerAfterBuff + "," + (powerAfterBuff < points ? " applying buff..." : " breaking generation."));
+
+                if (powerAfterBuff == power || powerAfterBuff >= points) {
+                    Debug.Log("Buffing " + buff + " is too powerful, removing...");
+                    strategy.RemoveAll(buffCat => buffCat == buff);
+                    continue;
                 } else {
-                    break;
+                    power = powerAfterBuff;
+                    IncrementBuff(ref buffs, buff);
                 }
             }
             if (buffAttempts >= MaxBuffAttempts) {
@@ -67,14 +69,39 @@ namespace Boss_Fight_Mod
             return power;
         }
 
+        private static bool IncrementBuff(ref Dictionary<BuffCat, float> buffs, BuffCat buff)
+        {
+            switch (buff) {
+                // reduce by 15% every time without hitting 0.
+                case BuffCat.Cooldown:
+                    if (buffs[buff] * (1 - BossFightSettings.BuffIncrements[buff]) <= BossFightSettings.CooldownMin) {
+                        return false;
+                    }
+                    break;
+                // limit to a max size
+                case BuffCat.Size:
+                    if (buffs[buff] + BossFightSettings.BuffIncrements[buff] >= BossFightSettings.SizeMax) {
+                        return false;
+                    }
+                    break;
+            }
+
+            Buff(ref buffs, buff);
+            return true;
+        }
+
+        private static void Buff(ref Dictionary<BuffCat, float> buffs, BuffCat buff)
+        {
+            buffs[buff] = (buff == BuffCat.Cooldown) ?
+                buffs[buff] * (1 - BossFightSettings.BuffIncrements[buff]) :
+                buffs[buff] + BossFightSettings.BuffIncrements[buff];
+        }
+
         private static float PowerIfBuffed(PawnKindDef def, Dictionary<BuffCat, float> buffMultipliers, BuffCat buff)
         {
             Dictionary<BuffCat, float> buffs = new Dictionary<BuffCat, float>(buffMultipliers);
-            if (buff == BuffCat.Cooldown) {
-                // reduce by 15% every time without hitting 0.
-                buffs[buff] *= (1 - buffIncrement);
-            } else {
-                buffs[buff] += buffIncrement;
+            if (!IncrementBuff(ref buffs, buff)) {
+                Log.Warning("Your puny colony couldn't stand up to a regular " + def.label + ", much less a boss.");
             }
             return CombatPower(def.race, buffs);
         }
