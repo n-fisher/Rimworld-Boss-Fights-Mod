@@ -11,8 +11,10 @@ namespace Boss_Fight_Mod
         private Lord bossLord;
         private Faction faction;
 
-        protected void GuardNullStatics(IncidentParms parms)
+        protected void ValidateVariables(IncidentParms parms)
         {
+            Map map = (Map)parms.target;
+
             if (BossFightDefOf.AllowedBossKinds == null) {
                 BossFightDefOf.AllowedBossKinds = DefDatabase<PawnKindDef>.AllDefs.Where(def =>
                     def.RaceProps?.Animal ?? false && CombatPowerCalculator.BodyMoveCoverages.Keys.Contains(def.RaceProps?.body?.defName)
@@ -23,15 +25,19 @@ namespace Boss_Fight_Mod
                     def.race?.Animal ?? false && CombatPowerCalculator.BodyMoveCoverages.Keys.Contains(def.race?.body?.defName))
                 );
             }
+
+            //fix for having different factions across different games in same playthrough
+            faction = Find.FactionManager.FirstFactionOfDef(BossFightDefOf.BossFaction);
             if (faction == null) {
                 faction = FactionGenerator.NewGeneratedFaction(BossFightDefOf.BossFaction);
                 Find.FactionManager.Add(faction);
-                Find.VisibleMap.pawnDestinationReservationManager.RegisterFaction(faction);
+                map.pawnDestinationReservationManager.RegisterFaction(faction);
             }
 
+            bossLord = Find.VisibleMap.lordManager.lords.FirstOrDefault(lord => lord == bossLord);
             if (bossLord == null) {
                 bossLord = LordMaker.MakeNewLord(faction, new LordJob_BossAssault(faction), (Map) parms.target);
-                Find.VisibleMap.lordManager.AddLord(bossLord);
+                map.lordManager.AddLord(bossLord);
             }
         }
 
@@ -39,7 +45,7 @@ namespace Boss_Fight_Mod
         {
             Map map = (Map) parms.target;
 
-            GuardNullStatics(parms);
+            ValidateVariables(parms);
 
             if (!RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 intVec, map, CellFinder.EdgeRoadChance_Animal, null)) {
                 return false;

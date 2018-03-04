@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using RimWorld;
 using Verse;
+using Verse.AI;
 using static Boss_Fight_Mod.BossFightUtility;
 
 namespace Boss_Fight_Mod
@@ -46,7 +47,7 @@ namespace Boss_Fight_Mod
                 field.SetValue(this, field.GetValue(def));
             }
             
-            defName = "Boss" + def.defName + points;
+            defName = "Level" + points + "Boss" + def.defName;
             label = "Boss " + label;
 
             statBases = new List<StatModifier>();
@@ -146,6 +147,26 @@ namespace Boss_Fight_Mod
             linkedBodyPartsGroup = new BodyPartGroupDef();
             linkedBodyPartsGroup.listOrder = tool.linkedBodyPartsGroup.listOrder;*/
 
+        }
+    }
+
+    public class BossMindState : Pawn_MindState
+    {
+        public BossMindState(Pawn_MindState state)
+        {
+            foreach (FieldInfo field in state.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance)) {
+                field.SetValue(this, field.GetValue(state));
+            }
+        }
+
+        public new void Notify_DamageTaken(DamageInfo dinfo)
+        {
+            if (dinfo.Def.externalViolence) {
+                lastHarmTick = Find.TickManager.TicksGame;
+                if (pawn.GetPosture() != 0) {
+                    lastDisturbanceTick = Find.TickManager.TicksGame;
+                }
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Boss_Fight_Mod
     public class BossFightUtility
     {
         public enum BuffCat {
-            Damage, Speed, Cooldown, Health, Accuracy, Size
+            Damage, Speed, Cooldown, Health,/* Accuracy,*/ Size
         }
 
         public static Dictionary<string, IEnumerable<BuffCat>> BuffStrategies = new Dictionary<string, IEnumerable<BuffCat>>();
@@ -18,10 +18,10 @@ namespace Boss_Fight_Mod
         {
             PawnKindDef boss = BossFightDefOf.AllowedBossKinds.RandomElement();
             KeyValuePair<string, IEnumerable<BuffCat>> strat = BuffStrategies.RandomElement();
+            float newPoints = points * BossFightSettings.PointConversionFactor;
+            Debug.Log("Initializing a " + strat.Key + " " + boss.defName + " with " + newPoints + " points (base: " + points + ")...");
 
-            Debug.Log("Initializing a " + strat.Key + " " + boss.defName + " with " + points + " points...");
-
-            BossPawnKindDef def = new BossPawnKindDef(boss, points, strat.Value);
+            BossPawnKindDef def = new BossPawnKindDef(boss, newPoints, strat.Value);
 
             Debug.Log("Created a boss with " + def.combatPower + " power.\nBuffs: " + def.BuffMultiple.ToStringFullContents());
 
@@ -32,6 +32,7 @@ namespace Boss_Fight_Mod
         {
             Pawn pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(animal, faction, PawnGenerationContext.NonPlayer, tile));
             pawn.thingIDNumber = Find.UniqueIDsManager.GetNextThingID();
+            pawn.mindState.canFleeIndividual = false;
             return pawn;
         }
     }

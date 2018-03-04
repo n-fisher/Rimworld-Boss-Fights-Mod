@@ -62,7 +62,7 @@
     <Compile Include="BFSoundDefs.cs" />
     <Compile Include="BFCombatPowerCalculator.cs" />
     <Compile Include="BFIncidentWorker_BossFight.cs" />
-    <Compile Include="BFLordJob_BossAssault.cs" />
+    <Compile Include="BFLords.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

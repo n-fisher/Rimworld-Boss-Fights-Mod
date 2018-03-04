@@ -59,22 +59,23 @@ namespace Boss_Fight_Mod
                     BuffCat.Speed, BuffCat.Speed, BuffCat.Speed,
                     BuffCat.Cooldown, BuffCat.Cooldown, BuffCat.Cooldown,
                     BuffCat.Health, BuffCat.Health, BuffCat.Health,
-                    BuffCat.Accuracy, BuffCat.Accuracy, BuffCat.Accuracy,
-                    BuffCat.Size, BuffCat.Size, BuffCat.Size});
+                    //BuffCat.Accuracy, BuffCat.Accuracy, BuffCat.Accuracy,
+                    //BuffCat.Size, BuffCat.Size, BuffCat.Size,
+                });
             BuffStrategies.Add("Avatarfighter_Brute", Buff(
                 new List<BuffCat> { BuffCat.Speed },
-                new List<BuffCat> { BuffCat.Accuracy }));
+                new List<BuffCat> { }));
             BuffStrategies.Add("Avatarfighter_Basher", Buff(
-                new List<BuffCat> { BuffCat.Accuracy, BuffCat.Damage, BuffCat.Speed },
+                new List<BuffCat> { BuffCat.Damage, BuffCat.Speed },
                 new List<BuffCat> { BuffCat.Health }));
             BuffStrategies.Add("Avatarfighter_Rogue", Buff(
                 new List<BuffCat> { BuffCat.Speed, BuffCat.Damage },
                 new List<BuffCat> { }));
             BuffStrategies.Add("Avatarfigher_OnyxTip", Buff(
-                new List<BuffCat> { BuffCat.Damage, BuffCat.Damage, BuffCat.Damage, BuffCat.Health, BuffCat.Size, BuffCat.Size, BuffCat.Size },
-                new List<BuffCat> { BuffCat.Speed, BuffCat.Speed, BuffCat.Accuracy }));
+                new List<BuffCat> { BuffCat.Damage, BuffCat.Damage, BuffCat.Damage, BuffCat.Health, /*BuffCat.Size, BuffCat.Size, BuffCat.Size */},
+                new List<BuffCat> { BuffCat.Speed, BuffCat.Speed }));
             BuffStrategies.Add("fyarn_PlayGroundBully", Buff(
-                new List<BuffCat> { BuffCat.Damage, BuffCat.Damage, BuffCat.Speed, BuffCat.Cooldown, BuffCat.Cooldown, BuffCat.Size, BuffCat.Size },
+                new List<BuffCat> { BuffCat.Damage, BuffCat.Damage, BuffCat.Speed, BuffCat.Cooldown, BuffCat.Cooldown, /* BuffCat.Size, BuffCat.Size */},
                 new List<BuffCat> { BuffCat.Health }));
             BuffStrategies.Add("fyarn_PowerPixie", Buff(
                 new List<BuffCat> { },
